@@ -8,8 +8,15 @@
     <script type="text/javascript" src=script.js></script>
 </head>
 <body>
-<div id="list"></div>
+<div id="list">
+	<h3>Marker Names</h3>
+	    <ul id="markernames">
+	    	<li data-bind= "text: title"></li>
+	    </ul>
+
+
+</div>
 <div id="map"></div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewModel.init"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewModel"></script>
 </body>
 </html>
