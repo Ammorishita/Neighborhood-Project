@@ -2,7 +2,16 @@ body, html {
 	width: 100%;
 	background-color: white;
 }
+#list {
+	width: 300px;
+	background-color: red;
+}
 #map {
-	width: 50%;
+	width: 700px;
 	height: 600px;
+}
+.container {
+	width: 1028px;
+	background-color: blue;
+	display: flex;
 }

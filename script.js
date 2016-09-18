@@ -22,12 +22,6 @@ var initialMarkers = [
 	},
 ]
 
-var Markers = function(data) {
-	this.title = ko.observable(data.title);
-	this.position = ko.observable(data.position);
-	this.map = map
-};
-
 var viewModel = function() {
 	var self = this;
 	var map;
@@ -40,17 +34,28 @@ var viewModel = function() {
 		marker = new google.maps.Marker({
 		position: initialMarkers[i].position,
 		title: initialMarkers[i].title,
-		map: map
+		map: map,
 		})
+
+		marker.addListener('click', (function(){
+			var infowindow = new google.maps.InfoWindow({
+			content: initialMarkers[i].title
+			});
+			return function() {
+				infowindow.open(map, this)
+			};
+		})(this))
 	}	
-	console.log(initialMarkers[0].position);
-	this.markerList = ko.observableArray([]);
+	/*this.markerList = ko.observableArray([]);
 	initialMarkers.forEach(function(item){
 		self.markerList.push(new Markers(item));
 	});
 	this.currentMarker = ko.observable(this.markerList()[0]);
-	console.log(this.currentMarker)
-		
+	console.log(this.currentMarker)*/
+};
+
+
+var viewList = function() {
 
 }
 ko.applyBindings(new viewModel());
