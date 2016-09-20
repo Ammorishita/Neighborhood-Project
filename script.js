@@ -36,9 +36,10 @@ var viewMarkers = function() {
 
 ko.applyBindings(new viewMarkers());
 
-var viewModel = function() {
+var viewMap = function() {
 	var self = this;
 	var map;
+	var currentMarker = null;
 	var infowindow = new google.maps.InfoWindow();
 	map = new google.maps.Map(document.getElementById('map'),{
 		center: {lat: 32.921186, lng: -117.167509},
@@ -49,13 +50,18 @@ var viewModel = function() {
 		var marker = new google.maps.Marker({
 		position: initialMarkers[i].position,
 		title: initialMarkers[i].title,
+		animation: google.maps.Animation.DROP,
 		map: map,
 		})
 		//Load info window data for specific markers on click.
 		marker.addListener('click', (function(){
 			return function() {
 				infowindow.setContent(this.title);
-				infowindow.open(map, this)
+				infowindow.open(map, this);
+				//Set clicked marker to bounce and disable last clicked marker bounce animation.
+				if (currentMarker) currentMarker.setAnimation(null);
+				currentMarker = this;
+				this.setAnimation(google.maps.Animation.BOUNCE)				
 			};
 		})(this))
 	}	
@@ -63,4 +69,6 @@ var viewModel = function() {
 
 
 var loadData = function() {
+	console.log('test')
+
 }
