@@ -4,14 +4,12 @@
 	<title>Neighborhood Map Project</title>
 	<meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <script type="text/javascript" src=knockout.js></script>
-    <script type="text/javascript" src=script.js></script>
 </head>
 <body>
 <div class="container">
-<div id="list">
-	<h3>Marker Names</h3>
-	    <ul id="markernames">
+<div id="list" data-bind="with: currentMarker">
+	<h3>Marker List</h3>
+	    <ul id="markernames" data-bind="foreach: initialMarkers">
 	    	<li data-bind= "text: title"></li>
 	    </ul>
 </div>
@@ -20,6 +18,8 @@
 	<h3>What's going on</h3>
 </div>
 </div>
+<script type="text/javascript" src=knockout.js></script>
+<script type="text/javascript" src=script.js></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewModel"></script>
 </body>
 </html>

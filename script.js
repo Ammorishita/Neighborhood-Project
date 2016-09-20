@@ -22,19 +22,19 @@ var initialMarkers = [
 	},
 ]
 
-/*var Markers = function(data) {
+var Markers = function(data) {
 	this.title = ko.observable(data.title);
-	this.position = ko.observableArray(data.position)
 }
 var viewMarkers = function() {
 	var self = this;
 	this.markerList = ko.observableArray([]);
-	initialMarkers.forEach(function(markeritem){
-		self.markerList.push(new Markers(markeritem));
+	initialMarkers.forEach(function(markerItem){
+		self.markerList.push(new Markers(markerItem));
 	});
 	this.currentMarker = ko.observable(this.markerList()[0]);
-	console.log(currentMarker)
-}*/
+}
+
+ko.applyBindings(new viewMarkers());
 
 var viewModel = function() {
 	var self = this;
@@ -51,6 +51,7 @@ var viewModel = function() {
 		title: initialMarkers[i].title,
 		map: map,
 		})
+		//Load info window data for specific markers on click.
 		marker.addListener('click', (function(){
 			return function() {
 				infowindow.setContent(this.title);
