@@ -3,7 +3,7 @@
 <head>
 	<title>Neighborhood Map Project</title>
 	<meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
@@ -21,10 +21,15 @@
 <div id="map"></div>
 <div id="info">
 	<h3>About this Location</h3>
+	<div class="wiki-container">
+		<h3 id="wikiheader">Wiki Articles</h3>
+		<ul id="wikilist">Learn more about this place</ul>
+	</div>
 </div>
 </div>
-<script type="text/javascript" src=knockout.js></script>
-<script type="text/javascript" src=script.js></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewMap"></script>
+<script type="text/javascript" src=js/libs/jquery-3.1.0.min.js></script>
+<script type="text/javascript" src=js/libs/knockout.js></script>
+<script type="text/javascript" src=js/script.js></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewMap"></script>
 </body>
 </html>
