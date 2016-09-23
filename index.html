@@ -7,14 +7,14 @@
 </head>
 <body>
 <div class="container">
-<div id="list" data-bind="with: currentMarker">
+<div id="list" data-bind="">
 	<h3>BBQ Locations</h3>
 	<form>
 	Search<input type="text"><br>
 	<input type="submit">
 		
 	    <ul id="markernames" data-bind="foreach: initialMarkers">
-	    	<li data-bind= "text: title, click: loadData"></li>
+	    	<li data-bind= "text: title, click: viewMap"></li>
 	    </ul>
 	</form>
 </div>

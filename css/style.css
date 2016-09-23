@@ -16,6 +16,8 @@ body, html {
 	width: 600px;
 	height: 600px;
 }
+#wikilist {
+}
 .container {
 	width: 1028px;
 	background-color: blue;

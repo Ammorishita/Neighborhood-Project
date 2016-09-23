@@ -1,4 +1,4 @@
-
+var infowindow, map, marker;
 var initialMarkers = [
 	{
 		"title" : "Phils BBQ, San Marcos",
@@ -35,33 +35,33 @@ var initialMarkers = [
 var Markers = function(data) {
 	this.title = ko.observable(data.title);
 }
-var viewMarkers = function() {
+var ViewModel = function() {	
 	var self = this;
 	this.markerList = ko.observableArray([]);
 	initialMarkers.forEach(function(markerItem){
 		self.markerList.push(new Markers(markerItem));
 	});
-	this.currentMarker = ko.observable(this.markerList()[0]);
 }
 
-ko.applyBindings(new viewMarkers());
+ko.applyBindings(new ViewModel());
 
 var viewMap = function() {
 	var self = this;
-	var map;
 	var currentMarker = null;
-	var infowindow = new google.maps.InfoWindow();
+	infowindow = new google.maps.InfoWindow();
 	map = new google.maps.Map(document.getElementById('map'),{
 		center: {lat: 32.921186, lng: -117.167509},
 		zoom: 10
 	});
+
 	//Create all of the map markers.
 	for (i=0; i<initialMarkers.length; i++){
-		var marker = new google.maps.Marker({
+		marker = new google.maps.Marker({
 		position: initialMarkers[i].position,
 		title: initialMarkers[i].title,
 		animation: google.maps.Animation.DROP,
 		map: map,
+		location: initialMarkers[i].location,
 		icon: initialMarkers[i].image
 		})
 		//Load info window data for specific markers on click.
@@ -69,7 +69,8 @@ var viewMap = function() {
 			return function() {
 				infowindow.setContent(this.title);
 				infowindow.open(map, this);
-				content = infowindow.content;
+				content = this.location;
+				console.log(content)
 				loadData();
 				//Set clicked marker to bounce and disable last clicked marker bounce animation.
 				if (currentMarker) currentMarker.setAnimation(null);
@@ -84,8 +85,11 @@ var viewMap = function() {
 };
 
 var loadData = function() {
-	var $wikilist = $('#wikilist');
+	console.log()
+
+	/*var $wikilist = $('#wikilist');
 	$wikilist.text('');
+	console.log(content);
     var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + content + '&format=json&callback=wikiCallback';
     $.ajax({
         url: wikiURL,
@@ -93,11 +97,11 @@ var loadData = function() {
         success: function(response){
             console.log(response);
             var articles = response[1];
-            for (i=0; i<5; i++){
+            for (i=0; i<2; i++){
                 articleStr = articles[i];
                 var url = "http://en.wikipedia.org/wiki/" + articleStr;
                 $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
             }
         }
-    })
+    })*/
 }
