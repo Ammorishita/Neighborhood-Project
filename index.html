@@ -12,9 +12,8 @@
 	<form>
 	Search<input type="text"><br>
 	<input type="submit">
-		
-	    <ul id="markernames" data-bind="foreach: initialMarkers">
-	    	<li data-bind= "text: title, click: viewMap"></li>
+	    <ul id="markernames" data-bind="foreach: markerList">
+	    	<li data-bind= "text: title, click: $root.itemclick"></li>
 	    </ul>
 	</form>
 </div>
@@ -30,6 +29,6 @@
 <script type="text/javascript" src=js/libs/jquery-3.1.0.min.js></script>
 <script type="text/javascript" src=js/libs/knockout.js></script>
 <script type="text/javascript" src=js/script.js></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=viewMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=init"></script>
 </body>
 </html>

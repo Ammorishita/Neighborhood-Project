@@ -1,4 +1,4 @@
-var infowindow, map, marker;
+var infowindow, map;
 var initialMarkers = [
 	{
 		"title" : "Phils BBQ, San Marcos",
@@ -33,19 +33,82 @@ var initialMarkers = [
 ]
 
 var Markers = function(data) {
-	this.title = ko.observable(data.title);
+	this.title = data.title;
+	this.location = data.location;
+	this.position = data.position;
+	this.image =data.image;
+	this.marker = ko.observable(data.marker)
 }
 var ViewModel = function() {	
 	var self = this;
-	this.markerList = ko.observableArray([]);
+	var currentMarker = null;
+	//Bind marker with list.
+	self.itemclick = function(markerItem){
+		google.maps.event.trigger(this.marker, 'click') 
+	};	
+	self.map = new google.maps.Map(document.getElementById('map'),{
+		center: {lat: 32.921186, lng: -117.167509},
+		zoom: 10
+	});
+
+	var content;
+	self.infowindow = new google.maps.InfoWindow({
+	});
+
+	self.markerList = [];
 	initialMarkers.forEach(function(markerItem){
 		self.markerList.push(new Markers(markerItem));
 	});
+
+	self.markerList.forEach(function(markerItem){
+		//Create object literal with marker properties.
+		var markerPins = {
+			map: self.map,
+			position: markerItem.position,
+			icon: markerItem.image,
+			animation: google.maps.Animation.DROP
+		};
+		//Create markers for each markerItem.
+		markerItem.marker = new google.maps.Marker(markerPins)
+		markerItem.marker.addListener('click', function(){
+			content = markerItem.title;
+			wikiContent = markerItem.location;
+			self.infowindow.open(self.map, this);
+			self.infowindow.setContent(content);
+			
+			//Animate marker and stop animation on last clicked marker
+			if (currentMarker) currentMarker.setAnimation(null);
+			currentMarker = this;
+			this.setAnimation(google.maps.Animation.BOUNCE)
+			setTimeout(function(){
+				currentMarker.setAnimation(null)	
+			},1400)
+
+			//Wikipedia api
+			var $wikilist = $('#wikilist');
+			//Clear wiki results
+			$wikilist.text('');;
+		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
+		    $.ajax({
+		        url: wikiURL,
+		        dataType: "jsonp",
+		        success: function(response){
+		            console.log(response);
+		            var articles = response[1];
+		            for (i=0; i<2; i++){
+		                articleStr = articles[i];
+		                var url = "http://en.wikipedia.org/wiki/" + articleStr;
+		                $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+		            }
+		        }
+		    })
+		})
+	})
+
+
 }
 
-ko.applyBindings(new ViewModel());
-
-var viewMap = function() {
+/*var viewMap = function() {
 	var self = this;
 	var currentMarker = null;
 	infowindow = new google.maps.InfoWindow();
@@ -53,6 +116,7 @@ var viewMap = function() {
 		center: {lat: 32.921186, lng: -117.167509},
 		zoom: 10
 	});
+	console.log('viewMap')
 
 	//Create all of the map markers.
 	for (i=0; i<initialMarkers.length; i++){
@@ -82,12 +146,12 @@ var viewMap = function() {
 			};
 		})(this))
 	}	
-};
+};*/
 
 var loadData = function() {
-	console.log()
+	console.log('load data')
 
-	/*var $wikilist = $('#wikilist');
+	var $wikilist = $('#wikilist');
 	$wikilist.text('');
 	console.log(content);
     var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + content + '&format=json&callback=wikiCallback';
@@ -103,5 +167,8 @@ var loadData = function() {
                 $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
             }
         }
-    })*/
+    })
+}
+function init(){
+	ko.applyBindings(new ViewModel());
 }
