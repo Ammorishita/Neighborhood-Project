@@ -37,7 +37,7 @@ var Markers = function(data) {
 	this.title = data.title;
 	this.location = data.location;
 	this.position = data.position;
-	this.image =data.image;
+	this.image = data.image;
 	this.marker = ko.observable(data.marker)
 }
 var ViewModel = function() {	
@@ -111,6 +111,20 @@ var ViewModel = function() {
 		    })
 		})
 	})
+	//Filter markers and list items.
+	self.searchTerm = ko.observable('');
+	self.filter = ko.computed(function(){
+		return ko.utils.arrayFilter(self.markerList(), function(item){
+			item.marker.setVisible(false);
+			if (item.title.toLowerCase().indexOf(self.searchTerm().toLowerCase()) >= 0) {
+				item.marker.setVisible(true)
+				return true;
+			} else {
+				item.marker.setVisible(false)
+				return false;
+			}
+		})
+	});
 }
 
 function init(){

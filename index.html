@@ -7,15 +7,12 @@
 </head>
 <body>
 <div class="container">
-<div id="list" data-bind="">
-	<h3>BBQ Locations</h3>
-	<form>
-	Search<input type="text"><br>
-	<input type="submit">
-	    <ul id="markernames" data-bind="foreach: markerList">
-	    	<li data-bind= "text: title, click: $root.itemclick"></li>
-	    </ul>
-	</form>
+<div id="list" class="center">
+	<h3 class="center">BBQ Locations</h3>
+	Search<input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
+    <ul id="markernames" data-bind="foreach: markerList, foreach: filter()">	    
+    	<li data-bind= "text: title, click: $root.itemclick"></li>
+    </ul>
 </div>
 <div id="map"></div>
 <div id="info">
