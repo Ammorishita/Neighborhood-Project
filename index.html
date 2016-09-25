@@ -3,16 +3,21 @@
 <head>
 	<title>Neighborhood Map Project</title>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style1024.css" media="(max-width: 1024px)">
+    <link rel="stylesheet" href="css/style700.css" media="(max-width: 700px)">
 </head>
 <body>
 <div class="container">
-<div id="list" class="center">
+<div id="list">
 	<h3 class="center">BBQ Locations</h3>
-	Search<input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
-    <ul id="markernames" data-bind="foreach: markerList, foreach: filter()">	    
+	<div class="center">
+		Search: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
+	</div>
+    <ul data-bind="foreach: markerList, foreach: filter()">	    
     	<li data-bind= "text: title, click: $root.itemclick"></li>
-    </ul>
+    </ul>		
 </div>
 <div id="map"></div>
 <div id="info">
