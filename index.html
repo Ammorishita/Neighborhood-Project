@@ -11,8 +11,8 @@
 <body>
 <div class="container">
 <div id="list">
-	<h3 class="center">BBQ Locations</h3>
-	<div class="center">
+	<h3 class="center phone">BBQ Locations</h3>
+	<div class="center phone">
 		Search: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
 	</div>
     <ul data-bind="foreach: markerList, foreach: filter()">	    
@@ -22,15 +22,18 @@
 <div id="map"></div>
 <div id="info">
 	<h3>About this Location</h3>
-	<div class="wiki-container">
+	<div class="wiki-container" data-bind="">
 		<h3 id="wikiheader">Wiki Articles</h3>
-		<ul id="wikilist">Learn more about this place</ul>
+		<ul id="wikilist">
+		<li>Learn more about this place</li>
+		<li data-bind ="visible: error">ERROR LOADING WIKIPEDIA ARTICLES</li>
+		</ul>
 	</div>
 </div>
 </div>
 <script type="text/javascript" src=js/libs/jquery-3.1.0.min.js></script>
 <script type="text/javascript" src=js/libs/knockout.js></script>
 <script type="text/javascript" src=js/script.js></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=init"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnVNUlMa6qVIw2yWjhZ5fZg8722A9jcbY&callback=init" onerror="googleError()"></script>
 </body>
 </html>

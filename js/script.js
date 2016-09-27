@@ -14,7 +14,7 @@ var initialMarkers = [
 		"image" : "images/Phils.png"
 	},
 	{
-		"title" : "Manna Korean BBQ San Diego",
+		"title" : "Manna Korean BBQ, San Diego",
 		"location" : "San Diego, CA",
 		"position" : {lat: 32.821301, lng: -117.156154},
 		"image" : "images/kbbq.png"
@@ -42,7 +42,7 @@ var Markers = function(data) {
 }
 var ViewModel = function() {	
 	var self = this;
-	var currentMarker = null;
+	var currentMarker = null;;
 	//Bind marker with list.
 	self.itemclick = function(markerItem){
 		google.maps.event.trigger(this.marker, 'click') 
@@ -52,6 +52,31 @@ var ViewModel = function() {
 		center: {lat: 32.921186, lng: -117.167509},
 		zoom: 10
 	});
+	//Declare error false to hide visible bindindg.
+	self.error = ko.observable(false);
+	//Wiki API function
+	self.wikiAPI = function(){
+			var $wikilist = $('#wikilist');
+			error = ko.observable(true);
+			//Clear wiki results
+			$wikilist.text('');
+		    var wikiURL = 'http://en.wikip1edia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
+	
+		    $.ajax({
+		    	url: wikiURL,
+		    	dataType: "jsonp"
+		    }).done(function(response){
+					 var articles = response[1];
+		            //Append the first 2 article results
+		            for (i=0; i<2; i++){
+		                articleStr = articles[i];
+		                var url = "http://en.wikipedia.org/wiki/" + articleStr;
+		                $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+		            };
+		    }).fail(function(e){
+        			$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>')
+		    });
+	};
 
 	var content;
 	self.infowindow = new google.maps.InfoWindow({
@@ -61,7 +86,6 @@ var ViewModel = function() {
 	initialMarkers.forEach(function(markerItem){
 		self.markerList().push(new Markers(markerItem));
 	});
-
 	self.markerList().forEach(function(markerItem){
 		//Create object literal with marker properties.
 		var markerPins = {
@@ -77,7 +101,6 @@ var ViewModel = function() {
 			wikiContent = markerItem.location;
 			self.infowindow.open(self.map, this);
 			self.infowindow.setContent(content);
-			
 			//Animate marker and stop animation on last clicked marker
 			if (currentMarker) currentMarker.setAnimation(null);
 			currentMarker = this;
@@ -85,30 +108,7 @@ var ViewModel = function() {
 			setTimeout(function(){
 				currentMarker.setAnimation(null)	
 			},1400)
-
-			//Wikipedia api
-			var $wikilist = $('#wikilist');
-			//Clear wiki results
-			$wikilist.text('');
-		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
-		    $.ajax({
-		        url: wikiURL,
-		        dataType: "jsonp",
-		        success: function(response){
-		            var articles = response[1];
-		            //Append the first 2 article results
-		            for (i=0; i<2; i++){
-		                articleStr = articles[i];
-		                var url = "http://en.wikipedia.org/wiki/" + articleStr;
-		                $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
-		            }
-		        },
-		        //If ajax error, append message.
-		        error: function(e){
-        			console.log('error');
-        			$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>')
-        		}
-		    })
+			self.wikiAPI();
 		})
 	})
 	//Filter markers and list items.
@@ -129,4 +129,7 @@ var ViewModel = function() {
 
 function init(){
 	ko.applyBindings(new ViewModel());
+}
+function googleError(){
+	window.alert("Google maps failed to load");
 }

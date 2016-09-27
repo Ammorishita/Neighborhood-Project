@@ -3,7 +3,7 @@ body, html {
 	background-color: black;
 }
 #list {
-	width: 300px;
+	width: ;
 	background-color: teal;
 	font-size: 1.5em;
 	color: yellow;
@@ -30,6 +30,9 @@ body, html {
 #map {
 	width: 500px;
 	height: 600px;
+}
+#wikilist li {
+	list-style-type: none;
 }
 .center {
 	text-align: center;

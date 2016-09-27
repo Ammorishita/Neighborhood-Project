@@ -1,7 +1,7 @@
 body, html {
 	width: 100%;
 	height: 100%;
-	background-color: red;
+	background-color: black;
 }
 #list {
 	width: 30%;
@@ -33,6 +33,9 @@ body, html {
 #map {
 	width: 70%;
 	height: auto;
+}
+#wikilist li {
+	list-style-type: none;
 }
 .center {
 	text-align: center;
