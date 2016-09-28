@@ -41,7 +41,7 @@ body, html {
 	text-align: center;
 }
 .container {
-	width: 1000px;
+	width: 100%;
 	background-color: black;
 	display: flex;
 	flex-wrap: wrap;

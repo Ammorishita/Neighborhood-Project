@@ -1,49 +1,50 @@
-"use strict";
+'use strict';
 var infowindow, map, i, articleStr, wikiContent;
 var initialMarkers = [
 	{
-		"title" : "Phils BBQ, San Marcos",
-		"location" : "San Marcos, CA",
-		"position" : {lat: 33.131536, lng: -117.185134},
-		"image" : "images/Phils.png"
+		'title' : 'Phils BBQ, San Marcos',
+		'location' : 'San Marcos, CA',
+		'position' : {lat: 33.131536, lng: -117.185134},
+		'image' : 'images/Phils.png'
 	},
 	{
-		"title" : "Phils BBQ, San Diego",
-		"location" : "San Diego, CA",
-		"position" : {lat: 32.754631, lng: -117.215972},
-		"image" : "images/Phils.png"
+		'title' : 'Phils BBQ, San Diego',
+		'location' : 'San Diego, CA',
+		'position' : {lat: 32.754631, lng: -117.215972},
+		'image' : 'images/Phils.png'
 	},
 	{
-		"title" : "Manna Korean BBQ, San Diego",
-		"location" : "San Diego, CA",
-		"position" : {lat: 32.821301, lng: -117.156154},
-		"image" : "images/kbbq.png"
+		'title' : 'Manna Korean BBQ, San Diego',
+		'location' : 'San Diego, CA',
+		'position' : {lat: 32.821301, lng: -117.156154},
+		'image' : 'images/kbbq.png'
 	},
 	{
-		"title" : "Manna Korean BBQ, Mira Mesa",
-		"location" : "San Diego, CA",
-		"position" : {lat: 32.915804, lng: -117.147914},
-		"image" : "images/kbbq.png"
+		'title' : 'Manna Korean BBQ, Mira Mesa',
+		'location' : 'San Diego, CA',
+		'position' : {lat: 32.915804, lng: -117.147914},
+		'image' : 'images/kbbq.png'
 	},
 	{
-		"title" : "Lumberyard Tavern and Grill, Encinitas",
-		"location" : "Encinitas, CA",
-		"position" : {lat: 33.039829, lng: -117.292110},
-		"image" : "images/tavern.png"
+		'title' : 'Lumberyard Tavern and Grill, Encinitas',
+		'location' : 'Encinitas, CA',
+		'position' : {lat: 33.039829, lng: -117.292110},
+		'image' : 'images/tavern.png'
 	},
-]
+];
 
 var Markers = function(data) {
 	this.title = data.title;
 	this.location = data.location;
 	this.position = data.position;
 	this.image = data.image;
-	this.marker = ko.observable(data.marker)
-}
+	this.marker = data.marker;
+};
 var ViewModel = function() {	
 	var self = this;
-	var currentMarker = null;;
-	//Bind marker with list.
+	var currentMarker = null;
+	//this.model= "test";
+		//Bind marker with list.
 	self.itemclick = function(markerItem){
 		google.maps.event.trigger(this.marker, 'click') 
 	};
@@ -54,27 +55,31 @@ var ViewModel = function() {
 	});
 	//Declare error false to hide visible bindindg.
 	self.error = ko.observable(false);
+	self.working = ko.observable(false);
+	self.wikiResults = ko.observableArray([]);
 	//Wiki API function
 	self.wikiAPI = function(){
-			var $wikilist = $('#wikilist');
-			error = ko.observable(true);
+			var $wikilist = $('#wikilist');	
+			self.error(true);
+			console.log(self.error())
 			//Clear wiki results
 			$wikilist.text('');
-		    var wikiURL = 'http://en.wikip1edia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
+		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
 	
 		    $.ajax({
 		    	url: wikiURL,
-		    	dataType: "jsonp"
+		    	dataType: 'jsonp'
 		    }).done(function(response){
+		    		console.log(response);
 					 var articles = response[1];
 		            //Append the first 2 article results
 		            for (i=0; i<2; i++){
 		                articleStr = articles[i];
-		                var url = "http://en.wikipedia.org/wiki/" + articleStr;
-		                $wikilist.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+		                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+		                $wikilist.append('<li><a href=' + url + '>' + articleStr + '</a></li>');
 		            };
 		    }).fail(function(e){
-        			$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>')
+        			//$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>');
 		    });
 	};
 
@@ -95,41 +100,43 @@ var ViewModel = function() {
 			animation: google.maps.Animation.DROP
 		};
 		//Create markers for each markerItem.
-		markerItem.marker = new google.maps.Marker(markerPins)
+		markerItem.marker = new google.maps.Marker(markerPins);
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
 			wikiContent = markerItem.location;
 			self.infowindow.open(self.map, this);
 			self.infowindow.setContent(content);
 			//Animate marker and stop animation on last clicked marker
-			if (currentMarker) currentMarker.setAnimation(null);
+			if (currentMarker) {
+				currentMarker.setAnimation(null)
+			};
 			currentMarker = this;
-			this.setAnimation(google.maps.Animation.BOUNCE)
+			this.setAnimation(google.maps.Animation.BOUNCE);
 			setTimeout(function(){
-				currentMarker.setAnimation(null)	
-			},1400)
+				currentMarker.setAnimation(null);	
+			},1400);
 			self.wikiAPI();
-		})
-	})
+		});
+	});
 	//Filter markers and list items.
 	self.searchTerm = ko.observable('');
 	self.filter = ko.computed(function(){
 		return ko.utils.arrayFilter(self.markerList(), function(item){
 			item.marker.setVisible(false);
 			if (item.title.toLowerCase().indexOf(self.searchTerm().toLowerCase()) >= 0) {
-				item.marker.setVisible(true)
+				item.marker.setVisible(true);
 				return true;
 			} else {
-				item.marker.setVisible(false)
+				item.marker.setVisible(false);
 				return false;
 			}
-		})
+		});
 	});
-}
+};
 
 function init(){
 	ko.applyBindings(new ViewModel());
-}
+};
 function googleError(){
-	window.alert("Google maps failed to load");
-}
+	window.alert('Google maps failed to load');
+};
