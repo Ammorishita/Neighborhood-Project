@@ -53,32 +53,34 @@ var ViewModel = function() {
 		center: {lat: 32.921186, lng: -117.167509},
 		zoom: 10
 	});
-	//Declare error false to hide visible bindindg.
+	//Declare error false/true to hide/show visible bindindg.
 	self.error = ko.observable(false);
-	self.working = ko.observable(false);
+	self.working = ko.observable(true);
 	self.wikiResults = ko.observableArray([]);
 	//Wiki API function
 	self.wikiAPI = function(){
 			var $wikilist = $('#wikilist');	
-			self.error(true);
-			console.log(self.error())
+			self.working(false);
+			//self.error(true);
 			//Clear wiki results
-			$wikilist.text('');
+			//$wikilist.text('');
 		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
 	
 		    $.ajax({
 		    	url: wikiURL,
 		    	dataType: 'jsonp'
 		    }).done(function(response){
-		    		console.log(response);
-					 var articles = response[1];
-		            //Append the first 2 article results
-		            for (i=0; i<2; i++){
-		                articleStr = articles[i];
-		                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-		                $wikilist.append('<li><a href=' + url + '>' + articleStr + '</a></li>');
-		            };
-		    }).fail(function(e){
+		    	$wikilist.text('')
+	    		console.log(response);
+				 var articles = response[1];
+	            //Append the first 2 article results
+	            for (i=0; i<2; i++){
+	                articleStr = articles[i];
+	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+	                $wikilist.append('<li><a href=' + url + '>' + articleStr + '</a></li>');
+	            };
+		    }).fail(function(){
+		    	self.error(true);
         			//$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>');
 		    });
 	};
