@@ -27,10 +27,9 @@
 		<ul id="wikilist" data-bind="">
 		<li data-bind = "visible: working">Learn more about this place</li>
 		<li data-bind = "visible: error">ERROR LOADING WIKIPEDIA ARTICLES</li>
-		<div class="API-results" data-bind="">
-		<li data-bind= ""></li>			
+		<div class="API-results" data-bind="foreach: wikiResults">
+		<li><a data-bind= "text: title, attr: {href: url}" target="_new"></a></li>			
 		</div>
-
 		</ul>
 	</div>
 </div>

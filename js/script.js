@@ -40,6 +40,10 @@ var Markers = function(data) {
 	this.image = data.image;
 	this.marker = data.marker;
 };
+var Wiki = function(data) {;
+	this.title = data;
+	this.url = 'http://en.wikipedia.org/wiki/' + data;
+};
 var ViewModel = function() {	
 	var self = this;
 	var currentMarker = null;
@@ -56,7 +60,12 @@ var ViewModel = function() {
 	//Declare error false/true to hide/show visible bindindg.
 	self.error = ko.observable(false);
 	self.working = ko.observable(true);
-	self.wikiResults = ko.observableArray([]);
+
+	self.wikiResults = ko.observableArray();
+	/*initialWiki.forEach(function(items){
+		self.wikiResults().push(new Wiki(items));
+	});*/
+	console.log(self.wikiResults())
 	//Wiki API function
 	self.wikiAPI = function(){
 			var $wikilist = $('#wikilist');	
@@ -70,15 +79,16 @@ var ViewModel = function() {
 		    	url: wikiURL,
 		    	dataType: 'jsonp'
 		    }).done(function(response){
-		    	$wikilist.text('')
+		    	self.wikiResults([]);
 	    		console.log(response);
-				 var articles = response[1];
+				var articles = response[1];
+				console.log(articles)
 	            //Append the first 2 article results
-	            for (i=0; i<2; i++){
-	                articleStr = articles[i];
-	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-	                $wikilist.append('<li><a href=' + url + '>' + articleStr + '</a></li>');
-	            };
+	            articleStr = articles[i];
+	        	articles.forEach(function(items){
+	        		self.wikiResults.push(new Wiki(items));
+	        	});
+	        	console.log(self.wikiResults());
 		    }).fail(function(){
 		    	self.error(true);
         			//$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>');
