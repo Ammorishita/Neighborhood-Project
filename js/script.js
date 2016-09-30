@@ -1,5 +1,5 @@
 'use strict';
-var infowindow, map, i, articleStr, wikiContent;
+var infowindow, map, i, articleStr, wikiContent, google, ko, $;
 var initialMarkers = [
 	{
 		'title' : 'Phils BBQ, San Marcos',
@@ -40,17 +40,21 @@ var Markers = function(data) {
 	this.image = data.image;
 	this.marker = data.marker;
 };
-var Wiki = function(data) {;
+var Wiki = function(data) {
 	this.title = data;
 	this.url = 'http://en.wikipedia.org/wiki/' + data;
 };
 var ViewModel = function() {	
 	var self = this;
 	var currentMarker = null;
+	var 
+	remove = function(){
+		self.wikiResults([]);
+	}
 	//this.model= "test";
 		//Bind marker with list.
 	self.itemclick = function(markerItem){
-		google.maps.event.trigger(this.marker, 'click') 
+		google.maps.event.trigger(this.marker, 'click'); 
 	};
 	//Create google map	
 	self.map = new google.maps.Map(document.getElementById('map'),{
@@ -60,19 +64,12 @@ var ViewModel = function() {
 	//Declare error false/true to hide/show visible bindindg.
 	self.error = ko.observable(false);
 	self.working = ko.observable(true);
-
+	//Observable array for the wiki api results.
 	self.wikiResults = ko.observableArray();
-	/*initialWiki.forEach(function(items){
-		self.wikiResults().push(new Wiki(items));
-	});*/
-	console.log(self.wikiResults())
+	console.log(self.wikiResults());
 	//Wiki API function
 	self.wikiAPI = function(){
-			var $wikilist = $('#wikilist');	
 			self.working(false);
-			//self.error(true);
-			//Clear wiki results
-			//$wikilist.text('');
 		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
 	
 		    $.ajax({
@@ -82,16 +79,14 @@ var ViewModel = function() {
 		    	self.wikiResults([]);
 	    		console.log(response);
 				var articles = response[1];
-				console.log(articles)
-	            //Append the first 2 article results
-	            articleStr = articles[i];
-	        	articles.forEach(function(items){
-	        		self.wikiResults.push(new Wiki(items));
-	        	});
+				console.log(articles);
+	            //Add the first 2 wiki results into the observable array.
+	        	for (i=0; i<2; i++) {
+	        		self.wikiResults.push(new Wiki(articles[i]));
+	        	}
 	        	console.log(self.wikiResults());
 		    }).fail(function(){
 		    	self.error(true);
-        			//$wikilist.append('<li>ERROR RETRIEVING INFORMATION FROM WIKIPEDIA.</li>');
 		    });
 	};
 
@@ -109,19 +104,21 @@ var ViewModel = function() {
 			map: self.map,
 			position: markerItem.position,
 			icon: markerItem.image,
-			animation: google.maps.Animation.DROP
+			animation: google.maps.Animation.DROP,
 		};
 		//Create markers for each markerItem.
 		markerItem.marker = new google.maps.Marker(markerPins);
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
 			wikiContent = markerItem.location;
+			self.map.setZoom(11);
+			self.map.setCenter(this.position);
 			self.infowindow.open(self.map, this);
 			self.infowindow.setContent(content);
 			//Animate marker and stop animation on last clicked marker
 			if (currentMarker) {
-				currentMarker.setAnimation(null)
-			};
+				currentMarker.setAnimation(null);
+			}
 			currentMarker = this;
 			this.setAnimation(google.maps.Animation.BOUNCE);
 			setTimeout(function(){
@@ -148,7 +145,7 @@ var ViewModel = function() {
 
 function init(){
 	ko.applyBindings(new ViewModel());
-};
+}
 function googleError(){
 	window.alert('Google maps failed to load');
-};
+}
