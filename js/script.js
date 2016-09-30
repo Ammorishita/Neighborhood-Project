@@ -1,5 +1,5 @@
 'use strict';
-var infowindow, map, i, articleStr, wikiContent, google, ko, $;
+var infowindow, content, content2, map, i, articleStr, wikiContent, google, ko, $;
 var initialMarkers = [
 	{
 		'title' : 'Phils BBQ, San Marcos',
@@ -11,7 +11,8 @@ var initialMarkers = [
 		'title' : 'Phils BBQ, San Diego',
 		'location' : 'San Diego, CA',
 		'position' : {lat: 32.754631, lng: -117.215972},
-		'image' : 'images/Phils.png'
+		'image' : 'images/Phils.png',
+		'search' : 'Phils BBQ'
 	},
 	{
 		'title' : 'Manna Korean BBQ, San Diego',
@@ -90,7 +91,46 @@ var ViewModel = function() {
 		    });
 	};
 
-	var content;
+	self.yelpAPI = function(){
+		function nonce_generate() {
+  			return (Math.floor(Math.random() * 1e12).toString());
+		}
+		var YELP_BASE_URL = 'https://api.yelp.com/v2/search/';
+		var YELP_KEY_SECRET = 'YJgc-BtCt9ogrrDXz5ptbkFJ3mo';
+		var YELP_TOKEN_SECRET = 'gK1IB6E7txoJUpH3AK7p52iF8MQ';
+		var yelp_url = YELP_BASE_URL; //+ 'business/' + self.selected_place().Yelp.business_id;
+
+	    var parameters = {
+	      oauth_consumer_key: 'REfQ41eJe5W6cOXEKbedIw',
+	      oauth_token: 'yXeLtJ768XlAbLUoLwPJAnRqCSZv5MI_',
+	      oauth_nonce: nonce_generate(),
+	      oauth_timestamp: Math.floor(Date.now()/1000),
+	      oauth_signature_method: 'HMAC-SHA1',
+	      oauth_version : '1.0',
+	      callback: 'cb', 
+	      limit: 1,
+	      term: content,
+	      location: 'San+Diego'
+	    };
+    	var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, YELP_KEY_SECRET, YELP_TOKEN_SECRET);
+    	parameters.oauth_signature = encodedSignature;
+	    var settings = {
+	      url: yelp_url,
+	      data: parameters,
+	      cache: true,
+	      dataType: 'jsonp',
+	      callback: 'cb'
+	    };
+
+	    $.ajax(settings).done(function(results){
+	    	console.log(results);
+	    	console.log(results.businesses[0].image_url);
+	    	content2 = results.businesses[0].id;
+	    }).fail(function(){
+
+	    });
+	};
+
 	self.infowindow = new google.maps.InfoWindow({
 	});
 	//Create and add markers into an array
@@ -114,7 +154,7 @@ var ViewModel = function() {
 			self.map.setZoom(11);
 			self.map.setCenter(this.position);
 			self.infowindow.open(self.map, this);
-			self.infowindow.setContent(content);
+			self.infowindow.setContent(content + content2);
 			//Animate marker and stop animation on last clicked marker
 			if (currentMarker) {
 				currentMarker.setAnimation(null);
@@ -125,6 +165,7 @@ var ViewModel = function() {
 				currentMarker.setAnimation(null);	
 			},1400);
 			self.wikiAPI();
+			self.yelpAPI();
 		});
 	});
 	//Filter markers and list items.
