@@ -27,6 +27,40 @@ body, html {
 	background-color: pink;
 	text-align: center;
 }
+#infowindow {
+	width: 300px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.infowindow-image {
+	background-color: white;
+	width: 100px;
+	height: 100px;
+}
+.infowindow-link {
+	background-color: DodgerBlue;
+	width: 300px;
+	word-wrap: break-word;
+	padding: 5px 0px 0px 5px;
+	color: black;
+}
+.infowindow-link a {
+	color: DarkBlue;
+	font-weight: bold;
+}
+.infowindow-snippet {
+	background-color: AliceBlue;
+	color: Navy;
+	width: 190px;
+	font-weight: bold;
+	word-wrap: break-word;
+	padding: 0px 5px;
+}
+.infowindow-title {
+	background-color: DodgerBlue;
+	width: 300px;
+	color: white;
+}
 #map {
 	width: 500px;
 	height: 600px;
@@ -44,4 +78,10 @@ body, html {
 	margin: auto;
 	justify-content: center;
 	border: 14px solid DarkBlue;
+}
+.gm-style-iw {
+   width: 300px !important;
+   top: 0 !important;
+   left: 0 !important;  
+   background-color: white;
 }

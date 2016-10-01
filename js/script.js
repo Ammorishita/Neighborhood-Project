@@ -40,10 +40,16 @@ var Markers = function(data) {
 	this.position = data.position;
 	this.image = data.image;
 	this.marker = data.marker;
+	this.id = data.id;
 };
 var Wiki = function(data) {
 	this.title = data;
 	this.url = 'http://en.wikipedia.org/wiki/' + data;
+};
+var Yelp = function(data){
+	this.title = data.id;
+	this.image = data.image_url;
+	this.text = data.snippet_text
 };
 var ViewModel = function() {	
 	var self = this;
@@ -67,7 +73,7 @@ var ViewModel = function() {
 	self.working = ko.observable(true);
 	//Observable array for the wiki api results.
 	self.wikiResults = ko.observableArray();
-	console.log(self.wikiResults());
+	self.yelpResults = ko.observableArray();
 	//Wiki API function
 	self.wikiAPI = function(){
 			self.working(false);
@@ -124,15 +130,21 @@ var ViewModel = function() {
 
 	    $.ajax(settings).done(function(results){
 	    	console.log(results);
-	    	console.log(results.businesses[0].image_url);
-	    	content2 = results.businesses[0].id;
+	    	//var newresults = results.businesses[0];
+	    	var yelpID = results.businesses[0].id;
+	    	var yelpImage = results.businesses[0].image_url;
+	    	var yelpSnippet = results.businesses[0].snippet_text;
+	    	var yelpURL = results.businesses[0].url;
+	    	var infoContent = '<div id="infowindow"><div class="infowindow-title center"><h2>'+ content + '</h2>' +
+	    	'</div><div class="infowindow-image"><img src="' + yelpImage + '"></img></div><div class="infowindow-snippet"><p>' + yelpSnippet + '</p></div><div class="infowindow-link center"><a href="' + yelpURL + '" alt="Yelp Image">Find ' + content +' on Yelp!</a></p></div></div>'
+	    	//self.yelpResults.push(new Yelp(newresults));
+			self.infowindow.setContent(infoContent);		    	
 	    }).fail(function(){
 
 	    });
 	};
 
-	self.infowindow = new google.maps.InfoWindow({
-	});
+	self.infowindow = new google.maps.InfoWindow({});
 	//Create and add markers into an array
 	self.markerList = ko.observableArray([]);
 	initialMarkers.forEach(function(markerItem){
@@ -150,11 +162,17 @@ var ViewModel = function() {
 		markerItem.marker = new google.maps.Marker(markerPins);
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
+
+			self.yelpAPI();
+			
+			self.infowindow.open(self.map, this);
+			
+			//self.infowindow.setContent(content);	
 			wikiContent = markerItem.location;
 			self.map.setZoom(11);
 			self.map.setCenter(this.position);
-			self.infowindow.open(self.map, this);
-			self.infowindow.setContent(content + content2);
+
+
 			//Animate marker and stop animation on last clicked marker
 			if (currentMarker) {
 				currentMarker.setAnimation(null);
@@ -164,8 +182,8 @@ var ViewModel = function() {
 			setTimeout(function(){
 				currentMarker.setAnimation(null);	
 			},1400);
-			self.wikiAPI();
-			self.yelpAPI();
+			self.wikiAPI();	
+			//self.yelpAPI();
 		});
 	});
 	//Filter markers and list items.
