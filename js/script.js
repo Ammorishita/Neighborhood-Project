@@ -1,5 +1,5 @@
 'use strict';
-var infowindow, weatherIconURL, content, content2, map, i, articleStr, thisLocation, wikiContent, google, ko, $;
+var infowindow, oauthSignature, weatherIconURL, content, content2, map, i, articleStr, thisLocation, wikiContent, google, ko, $;
 var initialMarkers = [
 	{
 		'title' : 'Phils BBQ, San Marcos',
@@ -33,7 +33,6 @@ var initialMarkers = [
 		'image' : 'images/tavern.png'
 	},
 ];
-
 var Markers = function(data) {
 	this.title = data.title;
 	this.location = data.location;
@@ -47,16 +46,16 @@ var Wiki = function(data) {
 	this.url = 'http://en.wikipedia.org/wiki/' + data;
 };
 var Wiki2 = function(data) {
-	this.snippet = data
+	this.snippet = data;
 };
 var Weather = function(data) {
 	this.maintemp = 'Current Temperature: ' + data.main.temp + '\u2103';
 	this.icon = weatherIconURL + data.weather[0].icon +'.png';
 	this.description = data.weather[0].description;
 	this.city = thisLocation;
-	this.clouds = 'Cloud Coverage:' + data.clouds.all +'%';
-	this.wind = 'Wind Speed (m/s):' + data.wind.speed
-}
+	this.clouds = 'Cloud Coverage: ' + data.clouds.all +'%';
+	this.wind = 'Wind Speed (m/s): ' + data.wind.speed;
+};
 /*var Yelp = function(data){
 	this.title = data.id;
 	this.image = data.image_url;
@@ -65,10 +64,6 @@ var Weather = function(data) {
 var ViewModel = function() {	
 	var self = this;
 	var currentMarker = null;
-	var 
-	remove = function(){
-		self.wikiResults([]);
-	}
 	//this.model= "test";
 		//Bind marker with list.
 	self.itemclick = function(markerItem){
@@ -88,7 +83,8 @@ var ViewModel = function() {
 	self.wikiResults2 = ko.observableArray([]);
 	self.weatherResults = ko.observableArray([]);
 	//self.yelpResults = ko.observableArray();
-	//Wiki API function
+
+	//Weather API function
 	self.weatherAPI = function(){
 		self.working(false);
 		self.weather(true);
@@ -203,6 +199,7 @@ var ViewModel = function() {
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
 			thisLocation = markerItem.location;
+			console.log(thisLocation)
 			//Run the yelp and weather api for results.
 			self.yelpAPI();
 			self.weatherAPI();

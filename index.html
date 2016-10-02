@@ -9,29 +9,28 @@
     <link rel="stylesheet" href="css/style700.css" media="(max-width: 700px)">
 </head>
 <body>
-<div class="container">
+<div id="container">
 	<div class="sidebar">	
 		<div id="list">
 			<h3 class="center phone">BBQ Locations</h3>
 			<div class="center phone">
-				Filter: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
+				Filter: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><button data-bind="click: $root.addItem">Add</button><br>
 			</div>
-		    <ul data-bind="foreach: markerList, foreach: filter()">	    
+		    <ul id="list-items" data-bind="foreach: markerList, foreach: filter()">	    
 		    	<li data-bind= "text: title, click: $root.itemclick"></li>
 		    </ul>		
 		</div>
 		<div id="info">
-			<h3>What's the Weather?</h3>
-			<div class="" data-bind="">
-				<p data-bind= "visible: working"><span style="color:white">Current weather at this location.</span></p>
+				<div class="weather-title" data-bind="">
+				<h3>What's the Weather?</h3>
 				<p data-bind= "visible: error">COULD NOT FIND THE WEATHER</p>
+				</div>
 				<div class="weather-results" data-bind= "foreach: weatherResults, visible: weather">
 				<p class="city" data-bind= "text: city"></p>	
 				<p class="temp" data-bind= "text: maintemp"></p>
 				<p class="clouds" data-bind= "text: clouds"></p>
 				<p class="wind" data-bind= "text: wind"></p>	
-				</div>
-			</div>
+				</div>			
 		</div>
 	</div>
 	<div id="map"></div>

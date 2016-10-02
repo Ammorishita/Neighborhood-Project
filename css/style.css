@@ -1,15 +1,32 @@
-body, html {
+body {
 	width: 100%;
 	background-color: black;
 }
+#container {
+	width: 1000px;
+	background-color: black;
+	display: flex;
+	flex-wrap: wrap;
+	margin: auto;
+	justify-content: center;
+	border: 12px solid DodgerBlue;
+}
 #list {
 	width: 300px;
+	height: 380px;
 	background-color: Deepskyblue;
 	font-size: 1.5em;
 	color: Darkred;
+	margin: auto;
+	text-align: center;
 }
 #list ul {
 	background-color: #d3edf8;
+	overflow: auto;
+	height: 250px;
+	list-style-type: none;
+	width: 260px;
+	text-align: center;
 	display: inline-block;
 }
 #list li {
@@ -22,11 +39,13 @@ body, html {
 	background-color: DarkBlue;
 	cursor: pointer;
 }
+#list-items {
+}
 
 #info {
 	width: 300px;
-	background-color: Deepskyblue;
 	text-align: center;
+	margin: auto;
 }
 #info li {
 	text-align: center;
@@ -58,15 +77,6 @@ body, html {
 	font-size: 18px;
 	line-height: 25px;
 }
-.container {
-	width: 1000px;
-	background-color: black;
-	display: flex;
-	flex-wrap: wrap;
-	margin: auto;
-	justify-content: center;
-	border: 14px solid DodgerBlue;
-}
 .gm-style-iw {
    width: 300px !important;
    top: 0 !important;
@@ -91,6 +101,7 @@ body, html {
 	color: black;
 	border-bottom: 3px solid black;
 	border-right: 3px solid black;
+	margin: auto;
 }
 .infowindow-link a {
 	color: DarkBlue;
@@ -103,6 +114,7 @@ body, html {
 	font-weight: bold;
 	word-wrap: break-word;
 	padding: 0px 5px;
+	margin: auto;
 }
 .infowindow-title {
 	background-color: DodgerBlue;
@@ -112,7 +124,9 @@ body, html {
 	border-left: 3px solid black;
 }
 .sidebar {
-	width: 315px;
+	width: 350px;
+	margin: 15 auto;
+	justify-content: center;
 }
 .temp {
 	background-color: Aqua;
@@ -126,9 +140,16 @@ body, html {
 	border: 3px solid black;
 	display: flex;
 	flex-wrap: wrap;
+	position: relative;
+	margin-bottom: 25px;
 }
 .weather-results p {
 	margin: 0;
+}
+.weather-title {
+	background-color: Deepskyblue;
+	text-align: center;
+	margin: auto; 
 }
 .wind {
 	width: 300px;
