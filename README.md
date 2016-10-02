@@ -10,4 +10,4 @@ Run the application:
 
 Notes
 
-1. Makes use of knockout.js library, wikipedia api and google maps api.
+1. Makes use of knockout.js library, wikipedia, yelp, and google maps api.

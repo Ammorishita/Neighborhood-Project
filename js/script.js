@@ -1,5 +1,5 @@
 'use strict';
-var infowindow, content, content2, map, i, articleStr, wikiContent, google, ko, $;
+var infowindow, weatherIconURL, content, content2, map, i, articleStr, thisLocation, wikiContent, google, ko, $;
 var initialMarkers = [
 	{
 		'title' : 'Phils BBQ, San Marcos',
@@ -46,11 +46,22 @@ var Wiki = function(data) {
 	this.title = data;
 	this.url = 'http://en.wikipedia.org/wiki/' + data;
 };
-var Yelp = function(data){
+var Wiki2 = function(data) {
+	this.snippet = data
+};
+var Weather = function(data) {
+	this.maintemp = 'Current Temperature: ' + data.main.temp + '\u2103';
+	this.icon = weatherIconURL + data.weather[0].icon +'.png';
+	this.description = data.weather[0].description;
+	this.city = thisLocation;
+	this.clouds = 'Cloud Coverage:' + data.clouds.all +'%';
+	this.wind = 'Wind Speed (m/s):' + data.wind.speed
+}
+/*var Yelp = function(data){
 	this.title = data.id;
 	this.image = data.image_url;
 	this.text = data.snippet_text
-};
+};*/
 var ViewModel = function() {	
 	var self = this;
 	var currentMarker = null;
@@ -71,31 +82,59 @@ var ViewModel = function() {
 	//Declare error false/true to hide/show visible bindindg.
 	self.error = ko.observable(false);
 	self.working = ko.observable(true);
-	//Observable array for the wiki api results.
-	self.wikiResults = ko.observableArray();
-	self.yelpResults = ko.observableArray();
+	self.weather = ko.observable(false);
+	//Observable array for the wiki and weather api results.
+	self.wikiResults = ko.observableArray([]);
+	self.wikiResults2 = ko.observableArray([]);
+	self.weatherResults = ko.observableArray([]);
+	//self.yelpResults = ko.observableArray();
 	//Wiki API function
-	self.wikiAPI = function(){
-			self.working(false);
-		    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
-	
-		    $.ajax({
-		    	url: wikiURL,
-		    	dataType: 'jsonp'
-		    }).done(function(response){
-		    	self.wikiResults([]);
-	    		console.log(response);
-				var articles = response[1];
-				console.log(articles);
-	            //Add the first 2 wiki results into the observable array.
-	        	for (i=0; i<2; i++) {
-	        		self.wikiResults.push(new Wiki(articles[i]));
-	        	}
-	        	console.log(self.wikiResults());
-		    }).fail(function(){
-		    	self.error(true);
-		    });
+	self.weatherAPI = function(){
+		self.working(false);
+		self.weather(true);
+		self.weatherResults([]);
+		var key = '1c2345da8528da89ff0071bcdd221cce';
+		var weatherURL = 'http://api.openweathermap.org/data/2.5/weather?APPID=' + key +'&q=' + thisLocation + '&units=metric';
+		weatherIconURL = 'http://openweathermap.org/img/w/';
+		$.ajax({
+			url: weatherURL,
+			dataType: 'json'
+		}).done(function(response){
+			console.log(response);
+			self.weatherResults.push(new Weather(response));
+			
+			console.log(self.weatherResults());
+		}).fail(function(){
+			self.error(true);
+		});
+
 	};
+
+	/*self.wikiAPI = function(){
+		self.working(false);
+	    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
+
+	    $.ajax({
+	    	url: wikiURL,
+	    	dataType: 'jsonp'
+	    }).done(function(response){
+	    	self.wikiResults([]);
+	    	var articles = response[1];
+			var snippets = response[2];
+    		console.log(response);
+    		//self.wikiResults2().push(snippets);
+    		console.log(self.wikiResults2())
+			console.log(articles);
+            //Add the first 2 wiki results into the observable array.
+        	for (i=0; i<1; i++) {
+        		self.wikiResults.push(new Wiki(articles[i]));
+        		self.wikiResults2.push(new Wiki2(snippets[i]));
+        	}
+        	console.log(self.wikiResults());
+	    }).fail(function(){
+	    	self.error(true);
+	    });
+	};*/
 
 	self.yelpAPI = function(){
 		function nonce_generate() {
@@ -104,7 +143,7 @@ var ViewModel = function() {
 		var YELP_BASE_URL = 'https://api.yelp.com/v2/search/';
 		var YELP_KEY_SECRET = 'YJgc-BtCt9ogrrDXz5ptbkFJ3mo';
 		var YELP_TOKEN_SECRET = 'gK1IB6E7txoJUpH3AK7p52iF8MQ';
-		var yelp_url = YELP_BASE_URL; //+ 'business/' + self.selected_place().Yelp.business_id;
+		var yelp_url = YELP_BASE_URL;
 
 	    var parameters = {
 	      oauth_consumer_key: 'REfQ41eJe5W6cOXEKbedIw',
@@ -135,16 +174,17 @@ var ViewModel = function() {
 	    	var yelpImage = results.businesses[0].image_url;
 	    	var yelpSnippet = results.businesses[0].snippet_text;
 	    	var yelpURL = results.businesses[0].url;
-	    	var infoContent = '<div id="infowindow"><div class="infowindow-title center"><h2>'+ content + '</h2>' +
-	    	'</div><div class="infowindow-image"><img src="' + yelpImage + '"></img></div><div class="infowindow-snippet"><p>' + yelpSnippet + '</p></div><div class="infowindow-link center"><a href="' + yelpURL + '" alt="Yelp Image">Find ' + content +' on Yelp!</a></p></div></div>'
+	    	//Set content of infowindow.
+	    	var infoContent = '<div id="infowindow"><div class="infowindow-title center"><h2>'+ content + '</h2>' + '</div><div class="infowindow-image"><img src="' + yelpImage + '"></img></div><div class="infowindow-snippet"><p>"' + yelpSnippet + '"</p></div><div class="infowindow-link center"><a href="' + yelpURL + '" alt="Yelp Image" target="_new">Find ' + content +' on Yelp!</a></p></div></div>';
 	    	//self.yelpResults.push(new Yelp(newresults));
 			self.infowindow.setContent(infoContent);		    	
 	    }).fail(function(){
-
+	    	window.alert('Could not find results from Yelp.com');
 	    });
 	};
 
 	self.infowindow = new google.maps.InfoWindow({});
+
 	//Create and add markers into an array
 	self.markerList = ko.observableArray([]);
 	initialMarkers.forEach(function(markerItem){
@@ -162,15 +202,17 @@ var ViewModel = function() {
 		markerItem.marker = new google.maps.Marker(markerPins);
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
-
+			thisLocation = markerItem.location;
+			//Run the yelp and weather api for results.
 			self.yelpAPI();
-			
+			self.weatherAPI();
 			self.infowindow.open(self.map, this);
 			
 			//self.infowindow.setContent(content);	
 			wikiContent = markerItem.location;
 			self.map.setZoom(11);
 			self.map.setCenter(this.position);
+
 
 
 			//Animate marker and stop animation on last clicked marker
@@ -182,8 +224,6 @@ var ViewModel = function() {
 			setTimeout(function(){
 				currentMarker.setAnimation(null);	
 			},1400);
-			self.wikiAPI();	
-			//self.yelpAPI();
 		});
 	});
 	//Filter markers and list items.

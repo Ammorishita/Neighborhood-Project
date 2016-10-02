@@ -10,29 +10,31 @@
 </head>
 <body>
 <div class="container">
-<div id="list">
-	<h3 class="center phone">BBQ Locations</h3>
-	<div class="center phone">
-		Search: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
-	</div>
-    <ul data-bind="foreach: markerList, foreach: filter()">	    
-    	<li data-bind= "text: title, click: $root.itemclick"></li>
-    </ul>		
-</div>
-<div id="map"></div>
-<div id="info">
-	<h3>About this Location</h3>
-	<div class="wiki-container" data-bind="">
-		<h3 id="wikiheader">Wiki Articles</h3>
-		<ul id="wikilist" data-bind="">
-		<li data-bind = "visible: working">Learn more about this place</li>
-		<li data-bind = "visible: error">ERROR LOADING WIKIPEDIA ARTICLES</li>
-		<div class="API-results" data-bind="foreach: wikiResults">
-		<li><a data-bind= "text: title, attr: {href: url}" target="_new"></a></li>			
+	<div class="sidebar">	
+		<div id="list">
+			<h3 class="center phone">BBQ Locations</h3>
+			<div class="center phone">
+				Filter: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
+			</div>
+		    <ul data-bind="foreach: markerList, foreach: filter()">	    
+		    	<li data-bind= "text: title, click: $root.itemclick"></li>
+		    </ul>		
 		</div>
-		</ul>
+		<div id="info">
+			<h3>What's the Weather?</h3>
+			<div class="" data-bind="">
+				<p data-bind= "visible: working"><span style="color:white">Current weather at this location.</span></p>
+				<p data-bind= "visible: error">COULD NOT FIND THE WEATHER</p>
+				<div class="weather-results" data-bind= "foreach: weatherResults, visible: weather">
+				<p class="city" data-bind= "text: city"></p>	
+				<p class="temp" data-bind= "text: maintemp"></p>
+				<p class="clouds" data-bind= "text: clouds"></p>
+				<p class="wind" data-bind= "text: wind"></p>	
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
+	<div id="map"></div>
 </div>
 <script src=js/libs/oauth-signature.min.js></script>
 <script src=js/libs/jquery-3.1.0.min.js></script>
