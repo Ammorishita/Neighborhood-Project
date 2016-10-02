@@ -1,11 +1,16 @@
-body, html {
-	width: 100%;
-	background-color: black;
+html, body {
+    height: 100%;
+    background-color: black;
+}
+
+html {
+    display: table;
+    margin: auto;
 }
 #container {
-	width: 100%;
+	width: 686px;
 	height: 100%;
-	background-color: purple;
+	background-color: black;
 	display: flex;
 	flex-wrap: wrap;
 	margin: auto;
@@ -127,7 +132,7 @@ body, html {
 .sidebar {
 	min-width: 100%;
 	margin: auto;
-	background-color: red;
+	background-color: black;
 }
 .temp {
 	background-color: Aqua;

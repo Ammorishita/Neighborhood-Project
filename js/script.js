@@ -33,6 +33,15 @@ var initialMarkers = [
 		'image' : 'images/tavern.png'
 	},
 ];
+
+var b = {
+	'title' : 'TEST Tavern and Grill, Encinitas',
+	'location' : 'Encinitas, CA',
+	'position' : {lat: 33.069829, lng: -117.292110},
+	'image' : 'images/tavern.png'
+};
+
+
 var Markers = function(data) {
 	this.title = data.title;
 	this.location = data.location;
@@ -64,11 +73,11 @@ var Weather = function(data) {
 var ViewModel = function() {	
 	var self = this;
 	var currentMarker = null;
-	//this.model= "test";
-		//Bind marker with list.
+	//Bind marker with list.
 	self.itemclick = function(markerItem){
 		google.maps.event.trigger(this.marker, 'click'); 
 	};
+
 	//Create google map	
 	self.map = new google.maps.Map(document.getElementById('map'),{
 		center: {lat: 32.921186, lng: -117.167509},
@@ -199,7 +208,7 @@ var ViewModel = function() {
 		markerItem.marker.addListener('click', function(){
 			content = markerItem.title;
 			thisLocation = markerItem.location;
-			console.log(thisLocation)
+			console.log(thisLocation);
 			//Run the yelp and weather api for results.
 			self.yelpAPI();
 			self.weatherAPI();

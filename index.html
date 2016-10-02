@@ -14,7 +14,7 @@
 		<div id="list">
 			<h3 class="center phone">BBQ Locations</h3>
 			<div class="center phone">
-				Filter: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><button data-bind="click: $root.addItem">Add</button><br>
+				Filter: <input type="text" maxlength="64" data-bind="valueUpdate: keyup, textInput: searchTerm"><br>
 			</div>
 		    <ul id="list-items" data-bind="foreach: markerList, foreach: filter()">	    
 		    	<li data-bind= "text: title, click: $root.itemclick"></li>

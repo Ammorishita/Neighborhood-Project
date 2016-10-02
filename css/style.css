@@ -1,6 +1,16 @@
+html, body {
+    height: 100%;
+    background-color: black;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
 body {
-	width: 100%;
-	background-color: black;
+    display: table-cell;
+    vertical-align: middle;
 }
 #container {
 	width: 1000px;
