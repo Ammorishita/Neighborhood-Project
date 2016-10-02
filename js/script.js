@@ -87,6 +87,7 @@ var ViewModel = function() {
 	self.error = ko.observable(false);
 	self.working = ko.observable(true);
 	self.weather = ko.observable(false);
+	self.yelpError = ko.observable(false);
 	//Observable array for the wiki and weather api results.
 	self.wikiResults = ko.observableArray([]);
 	self.wikiResults2 = ko.observableArray([]);
@@ -115,6 +116,7 @@ var ViewModel = function() {
 
 	};
 
+	//I AM NOT USING THIS API ANYMORE.
 	/*self.wikiAPI = function(){
 		self.working(false);
 	    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + wikiContent + '&format=json&callback=wikiCallback';
@@ -145,7 +147,7 @@ var ViewModel = function() {
 		function nonce_generate() {
   			return (Math.floor(Math.random() * 1e12).toString());
 		}
-		var YELP_BASE_URL = 'https://api.yelp.com/v2/search/';
+		var YELP_BASE_URL = 'https://api.ye1lp.com/v2/search/';
 		var YELP_KEY_SECRET = 'YJgc-BtCt9ogrrDXz5ptbkFJ3mo';
 		var YELP_TOKEN_SECRET = 'gK1IB6E7txoJUpH3AK7p52iF8MQ';
 		var yelp_url = YELP_BASE_URL;
@@ -184,7 +186,9 @@ var ViewModel = function() {
 	    	//self.yelpResults.push(new Yelp(newresults));
 			self.infowindow.setContent(infoContent);		    	
 	    }).fail(function(){
-	    	window.alert('Could not find results from Yelp.com');
+	    	self.yelpError(true);
+	    	var infoContent = '<div class="infowindow-title center"><h2>'+ content + '</h2>' + '</div><p data-bind="visible: yelpError">Failed to load YELP Results"</p>';
+	    	self.infowindow.setContent(infoContent);
 	    });
 	};
 

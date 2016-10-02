@@ -10,4 +10,5 @@ Run the application:
 
 Notes
 
-1. Makes use of knockout.js library, wikipedia, yelp, and google maps api.
+1. Makes use of knockout.js, oauth-signature.min, and jQuery libraries.
+2. Uses wikipedia, yelp, openweathermap and google maps api.
